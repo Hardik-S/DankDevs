@@ -1,7 +1,7 @@
 // WS1/WS5 — Win95 shell UI scaffolding.
 import type { State } from '../core/state.js';
 
-const MIDDLE_FINGER_CURSOR_URL = '/assets/middle-finger-cursor.png';
+const MIDDLE_FINGER_CURSOR_URL = 'xmiddle-finger-cursor.png';
 
 export interface VirtualCursorOptions {
   element: HTMLElement;
