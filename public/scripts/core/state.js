@@ -1,6 +1,8 @@
 const initialState = {
     cursor: { x: 200, y: 200 },
     transcript: [],
+    commandHistory: [],
+    status: 'IDLE',
 };
 export class State {
     constructor() {

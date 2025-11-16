@@ -1,6 +1,8 @@
 // WS4 — Shared state & typings.
 import type { Command } from '../types/commands.js';
 
+export type ListeningStatus = 'IDLE' | 'LISTENING';
+
 export interface CursorState {
   x: number;
   y: number;
@@ -18,11 +20,15 @@ export interface AppState {
   cursor: CursorState;
   transcript: TranscriptEntry[];
   lastCommand?: Command;
+  commandHistory: string[];
+  status: ListeningStatus;
 }
 
 const initialState: AppState = {
   cursor: { x: 200, y: 200 },
   transcript: [],
+  commandHistory: [],
+  status: 'IDLE',
 };
 
 export class State {

@@ -59,14 +59,23 @@
           </div>
           <div class="virtual-cursor" role="presentation" aria-hidden="true"></div>
         </section>
-        <section class="control-pane" aria-label="Command reference and transcript">
-          <div class="command-panel__reference">
-            <h2>Command Reference</h2>
-            <ul>
-              <li>"Hey Go" + "mouse left 230 pixels"</li>
-              <li>"Hey Go" + "mouse to x 200 y 100"</li>
-              <li>"Hey Go" + "click"</li>
-              <li>"Hey Go" + "type hello world"</li>
+        <section class="control-pane" aria-label="Command status, history, and transcript">
+          <div
+            class="status-indicator status-indicator--idle control-pane__status"
+            data-status-indicator
+            data-status="IDLE"
+            aria-live="polite"
+          >
+            <span class="status-indicator__label">Status</span>
+            <span class="status-indicator__value" data-status-label>Idle</span>
+          </div>
+          <div class="control-pane__recent" aria-live="polite">
+            <header class="control-pane__recent-header">
+              <h2>Recent Commands</h2>
+              <p>Summaries of the last parsed voice commands.</p>
+            </header>
+            <ul id="command-history">
+              <li class="command-history__empty">No commands yet. Say “Hey Go” to begin.</li>
             </ul>
           </div>
           <div class="command-panel__transcript">
