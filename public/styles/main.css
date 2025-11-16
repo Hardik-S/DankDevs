@@ -42,6 +42,7 @@ body {
   background-color: #008080;
   border: 4px solid #006464;
   overflow: hidden;
+  cursor: none;
 }
 
 .desktop-pane__logo {
@@ -248,11 +249,20 @@ body {
 
 .virtual-cursor {
   position: absolute;
-  width: 16px;
-  height: 24px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="24"><polygon fill="white" stroke="black" points="0,0 16,12 9,13 9,24 5,24 5,13 0,12" /></svg>');
-  top: 40%;
-  left: 40%;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 96px;
   pointer-events: none;
-  z-index: 5;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  transform: translate(0, 0);
+}
+
+.virtual-cursor svg {
+  width: 48px;
+  height: 96px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
 }

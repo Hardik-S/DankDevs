@@ -1,6 +1,8 @@
 import type { State } from '../core/state.js';
 export interface Win95ShellOptions {
     root: HTMLElement;
+    desktopPane: HTMLElement;
+    cursorLayer: HTMLElement;
     state: State;
 }
 export declare class Win95Shell {
