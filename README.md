@@ -1,36 +1,47 @@
-# Today in History
+# Project Name
 
-A lightweight React single-page app (built with Vite) that highlights the current day and pulls a fun historical fact that occurred on this date. It is designed to be deployed to GitHub Pages and works great as a simple "today I learned" landing page.
+A concise, high-level description of what this project does and who it is for.
 
-## Getting started
+## Table of Contents
+- [About the Project](#about-the-project)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-```bash
-cd today-in-history
-npm install
-```
+## About the Project
+Provide additional context, motivation, and goals for the project. Highlight any unique features or technologies.
 
-### Run the dev server
+## Getting Started
+Instructions to set up the project locally.
 
-```bash
-npm run dev
-```
+### Prerequisites
+List software, tools, or accounts required before installation (e.g., Node.js, Python, Docker).
 
-The site will be available at the address printed in the terminal (typically `http://localhost:5173`).
+### Installation
+1. Clone the repository.
+2. Install dependencies.
+3. Configure environment variables or services if necessary.
 
-### Build for production / GitHub Pages
+## Usage
+Explain how to run the project, including commands, configuration examples, screenshots, or API references.
 
-```bash
-# The environment variable toggles the correct base path for GitHub Pages
-GITHUB_PAGES=1 npm run build
-```
+## Project Structure
+Outline the key directories and files to help contributors navigate the codebase.
 
-The static files will be generated inside `today-in-history/dist`. Commit the contents of that folder to the `gh-pages` branch (or let GitHub Actions deploy it) and enable Pages for the repository.
+## Roadmap
+Describe planned features, milestones, or link to an issue tracker.
 
-## How it works
+## Contributing
+Explain how to propose changes, open issues, and submit pull requests. Reference any coding standards or contribution guidelines.
 
-- The current date is formatted with `Intl.DateTimeFormat` to keep things locale-friendly.
-- Historical events are fetched from [history.muffinlabs.com](https://history.muffinlabs.com/) based on the current month/day.
-- A random event is displayed along with the year and a "learn more" link when available.
-- Users can click **"Show me another fact"** to cycle through additional events.
+## License
+Specify the project's license. If undecided, note that the license is to be determined.
 
-Feel free to customize the styling, copy, or API source to make the page your own.
+## Contact
+Provide contact information, links to the project's maintainers, or other helpful resources.
