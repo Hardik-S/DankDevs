@@ -1,6 +1,7 @@
 // WS5 — Transcript logging utilities for the right-hand panel.
 import type { AppState, TranscriptEntry, TranscriptResultStatus } from '../core/state.js';
 import type { Command } from '../types/commands.js';
+import { normalizeCommandText } from '../command/transcriptNormalizer.js';
 
 export interface LogResultPayload {
   status: TranscriptResultStatus;
@@ -23,12 +24,14 @@ export class TranscriptLogger {
   log(payload: TranscriptLogPayload): AppState {
     const { rawText, command = null, result } = payload;
     const timestamp = new Date();
+    const normalized = normalizeCommandText(rawText);
+    const transcriptText = (normalized.displayText || rawText).trim();
 
     return this.state.update((draft) => {
       const entry: TranscriptEntry = {
-        id: crypto.randomUUID(),
+        id: this.generateEntryId(),
         timestamp: timestamp.toISOString(),
-        rawText,
+        rawText: transcriptText,
         result,
       };
 
@@ -41,5 +44,14 @@ export class TranscriptLogger {
 
       draft.transcript.push(entry);
     });
+  }
+
+  private generateEntryId(): string {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+
+    const randomSuffix = Math.random().toString(16).slice(2, 10);
+    return `transcript-${Date.now()}-${randomSuffix}`;
   }
 }

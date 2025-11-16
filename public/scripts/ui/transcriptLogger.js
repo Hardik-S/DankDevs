@@ -1,3 +1,4 @@
+import { normalizeCommandText } from '../command/transcriptNormalizer.js';
 export class TranscriptLogger {
     constructor(state) {
         this.state = state;
@@ -9,11 +10,13 @@ export class TranscriptLogger {
     log(payload) {
         const { rawText, command = null, result } = payload;
         const timestamp = new Date();
+        const normalized = normalizeCommandText(rawText);
+        const transcriptText = (normalized.displayText || rawText).trim();
         return this.state.update((draft) => {
             const entry = {
-                id: crypto.randomUUID(),
+                id: this.generateEntryId(),
                 timestamp: timestamp.toISOString(),
-                rawText,
+                rawText: transcriptText,
                 result,
             };
             if (command === null || command === void 0 ? void 0 : command.summary) {
@@ -24,6 +27,13 @@ export class TranscriptLogger {
             }
             draft.transcript.push(entry);
         });
+    }
+    generateEntryId() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        const randomSuffix = Math.random().toString(16).slice(2, 10);
+        return `transcript-${Date.now()}-${randomSuffix}`;
     }
 }
 //# sourceMappingURL=transcriptLogger.js.map
