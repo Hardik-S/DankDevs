@@ -108,9 +108,9 @@ Document concrete behaviors, validation rules, and system interactions for every
 
 | Step | Owner / Module | Status |
 | --- | --- | --- |
-| [ ] 1. Ready microphone pipeline | WS2 — VoiceListener ensures permissions + idle baseline | Pending |
-| [ ] 2. Detect wake phrase "Hey Go" | WS2 — VoiceListener raises `onWake()` and debounces repeats | Pending |
-| [ ] 3. Capture immediate utterance | WS2 — CommandRecognizer buffers post-wake speech and emits raw text | Pending |
+| [x] 1. Ready microphone pipeline | WS2 — VoiceListener ensures permissions + idle baseline | Completed — VoiceListener now requests mic access, validates support, and measures an idle noise baseline |
+| [x] 2. Detect wake phrase "Hey Go" | WS2 — VoiceListener raises `onWake()` and debounces repeats | Completed — VoiceListener now listens via SpeechRecognition, emits `WAKE`, and debounces repeats |
+| [x] 3. Capture immediate utterance | WS2 — CommandRecognizer buffers post-wake speech and emits raw text | Completed — CommandRecognizer now starts a SpeechRecognition session post-wake, captures the next final transcript, and emits it on the command bus |
 | [ ] 4. Normalize transcript | WS3 — Parser trims wake words, lowercases for matching, preserves display casing | Pending |
 | [ ] 5. Parse into typed command | WS3 — CommandParser validates grammar and returns command object or error | Pending |
 | [ ] 6. Execute command | WS3 — CommandExecutor clamps values, drives virtual mouse/keyboard, handles errors | Pending |

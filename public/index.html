@@ -56,8 +56,8 @@
               </div>
               <div class="taskbar__tray">12:00</div>
             </div>
-            <div class="virtual-cursor" role="presentation"></div>
           </div>
+          <div class="virtual-cursor" role="presentation" aria-hidden="true"></div>
         </section>
         <section class="control-pane" aria-label="Command status, history, and transcript">
           <div
@@ -79,11 +79,10 @@
             </ul>
           </div>
           <div class="command-panel__transcript">
-            <header class="command-panel__transcript-header">
-              <h2>Transcript</h2>
-              <p>Raw text · parsed command · result</p>
-            </header>
-            <ul id="transcript"></ul>
+            <h2>Transcript</h2>
+            <div class="transcript__scroller" id="transcript-scroller" aria-live="polite">
+              <ul id="transcript" class="transcript__list" aria-label="Voice command transcript"></ul>
+            </div>
           </div>
         </section>
       </div>

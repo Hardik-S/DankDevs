@@ -4,7 +4,8 @@ export class Win95Shell {
         this.options = options;
         this.clockIntervalId = null;
         this.cursor = new VirtualCursor({
-            element: options.root.querySelector('.virtual-cursor'),
+            element: options.cursorLayer,
+            workspace: options.desktopPane,
             state: options.state,
         });
         this.taskbarClock = options.root.querySelector('.taskbar__tray');

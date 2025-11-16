@@ -12,19 +12,16 @@ const voiceBus = new EventBus();
 const commandBus = new EventBus();
 const parser = new CommandParser();
 const executor = new CommandExecutor(state);
+const desktopPane = document.querySelector('.desktop-pane');
 const root = document.querySelector('.win95-shell');
+const cursorLayer = document.querySelector('.desktop-pane .virtual-cursor');
+const transcriptContainer = document.querySelector('#transcript-scroller');
 const transcriptList = document.querySelector('#transcript');
-const statusIndicator = document.querySelector('[data-status-indicator]');
-const statusLabel = document.querySelector('[data-status-label]');
-const commandHistoryList = document.querySelector('#command-history');
-if (!root || !transcriptList || !statusIndicator || !statusLabel || !commandHistoryList) {
+if (!desktopPane || !root || !cursorLayer || !transcriptList || !transcriptContainer) {
     throw new Error('SoundGO root elements missing');
 }
-const statusIndicatorEl = statusIndicator;
-const statusLabelEl = statusLabel;
-const commandHistoryListEl = commandHistoryList;
-const shell = new Win95Shell({ root, state });
-const transcriptPanel = new TranscriptPanel({ list: transcriptList, state });
+const shell = new Win95Shell({ root, desktopPane, cursorLayer, state });
+const transcriptPanel = new TranscriptPanel({ container: transcriptContainer, list: transcriptList });
 const voiceListener = new VoiceListener(voiceBus);
 const commandRecognizer = new CommandRecognizer(commandBus);
 function renderFromSnapshot(snapshot) {
@@ -49,10 +46,11 @@ function setStatus(status) {
     renderFromSnapshot(snapshot);
 }
 function appendTranscript(rawText, command, result) {
-    const snapshot = state.update((draft) => {
+    state.update((draft) => {
+        const timestamp = new Date();
         const entry = {
             id: crypto.randomUUID(),
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: timestamp.toISOString(),
             rawText,
             result,
         };
@@ -62,7 +60,7 @@ function appendTranscript(rawText, command, result) {
             draft.commandHistory.unshift(command.summary);
             draft.commandHistory = draft.commandHistory.slice(0, 5);
         }
-        draft.transcript.unshift(entry);
+        draft.transcript.push(entry);
     });
     renderFromSnapshot(snapshot);
 }
