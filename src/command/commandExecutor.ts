@@ -11,7 +11,7 @@ export class CommandExecutor {
       case 'MOUSE_MOVE_RELATIVE':
         this.state.update((draft) => {
           const cursor = draft.cursor;
-          const delta = command.distance;
+          const delta = command.distancePx;
           if (command.direction === 'LEFT') cursor.x -= delta;
           if (command.direction === 'RIGHT') cursor.x += delta;
           if (command.direction === 'UP') cursor.y -= delta;
@@ -28,9 +28,10 @@ export class CommandExecutor {
           draft.lastCommand = command;
         });
         break;
-      case 'KEYBOARD_TYPE':
+      case 'KEY_TYPE':
+      case 'KEY_PRESS':
       case 'MOUSE_CLICK':
-      case 'MOUSE_DOUBLE_CLICK':
+      case 'MOUSE_DBLCLICK':
       case 'MOUSE_RIGHT_CLICK':
         this.state.update((draft) => {
           draft.lastCommand = command;
