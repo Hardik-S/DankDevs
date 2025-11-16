@@ -1,6 +1,7 @@
 // WS1/WS5 — Win95 shell UI scaffolding.
 import type { State } from '../core/state.js';
-import { MIDDLE_FINGER_CURSOR_SVG } from '../assets/middleFingerCursor.js';
+
+const MIDDLE_FINGER_CURSOR_URL = '/assets/middle-finger-cursor.png';
 
 export interface VirtualCursorOptions {
   element: HTMLElement;
@@ -27,7 +28,16 @@ export class VirtualCursor {
     if (this.mounted) {
       return;
     }
-    this.options.element.innerHTML = MIDDLE_FINGER_CURSOR_SVG;
+    this.options.element.innerHTML = '';
+    const image = document.createElement('img');
+    image.src = MIDDLE_FINGER_CURSOR_URL;
+    image.alt = '';
+    image.decoding = 'async';
+    image.loading = 'lazy';
+    image.width = 64;
+    image.height = 64;
+    image.draggable = false;
+    this.options.element.append(image);
     this.options.element.setAttribute('aria-hidden', 'true');
     this.options.element.setAttribute('data-cursor', 'middle-finger');
     this.options.element.style.top = '0px';
