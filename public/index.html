@@ -25,9 +25,9 @@
           </div>
           <div class="win95-shell">
             <div class="win95-shell__desktop" role="presentation">
-              <div class="window window--primary">
+              <div class="window window--primary" role="dialog" aria-labelledby="soundgo-notes-title">
                 <header class="window__titlebar">
-                  <span>SoundGO Notes</span>
+                  <span id="soundgo-notes-title">SoundGO Notes</span>
                   <div class="window__actions">
                     <button aria-label="Minimize">_</button>
                     <button aria-label="Maximize">▢</button>
@@ -35,8 +35,17 @@
                   </div>
                 </header>
                 <div class="window__body">
-                  <p>Voice controlled demo workspace.</p>
-                  <textarea placeholder="Dictation target" rows="5"></textarea>
+                  <div class="window__notepad" aria-label="Dictation notepad">
+                    <label for="dictation-pad">Voice dictation buffer</label>
+                    <textarea id="dictation-pad" placeholder="Start talking to fill this pad" rows="6"></textarea>
+                  </div>
+                  <div class="window__meme-file" role="group" aria-label="Meme file placeholder">
+                    <div class="meme-file__icon" aria-hidden="true">😂</div>
+                    <div class="meme-file__meta">
+                      <strong>meme-file.bmp</strong>
+                      <span>Double-click to unleash the lolz</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
