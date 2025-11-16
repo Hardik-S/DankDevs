@@ -21,22 +21,24 @@ const executor = new CommandExecutor(state);
 const desktopPane = document.querySelector<HTMLElement>('.desktop-pane');
 const root = document.querySelector<HTMLElement>('.win95-shell');
 const cursorLayer = document.querySelector<HTMLElement>('.desktop-pane .virtual-cursor');
+const transcriptContainer = document.querySelector<HTMLElement>('#transcript-scroller');
 const transcriptList = document.querySelector<HTMLUListElement>('#transcript');
 
-if (!desktopPane || !root || !cursorLayer || !transcriptList) {
+if (!desktopPane || !root || !cursorLayer || !transcriptList || !transcriptContainer) {
   throw new Error('SoundGO root elements missing');
 }
 
 const shell = new Win95Shell({ root, desktopPane, cursorLayer, state });
-const transcriptPanel = new TranscriptPanel({ list: transcriptList, state });
+const transcriptPanel = new TranscriptPanel({ container: transcriptContainer, list: transcriptList });
 const voiceListener = new VoiceListener(voiceBus);
 const commandRecognizer = new CommandRecognizer(commandBus);
 
 function appendTranscript(rawText: string, command: Command | null, result: string): void {
   state.update((draft) => {
+    const timestamp = new Date();
     const entry: TranscriptEntry = {
       id: crypto.randomUUID(),
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: timestamp.toISOString(),
       rawText,
       result,
     };
@@ -45,7 +47,7 @@ function appendTranscript(rawText: string, command: Command | null, result: stri
       entry.parsedCommand = command.summary;
     }
 
-    draft.transcript.unshift(entry);
+    draft.transcript.push(entry);
   });
   transcriptPanel.render(state.snapshot.transcript);
 }
