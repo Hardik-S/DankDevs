@@ -78,6 +78,41 @@
             <span class="status-indicator__label">Status</span>
             <span class="status-indicator__value" data-status-label>Idle</span>
           </div>
+          <div class="command-panel__reference" aria-label="Command reference">
+            <h2>All commands available</h2>
+            <ul class="command-reference" aria-label="Mouse and keyboard commands you can say">
+              <li class="command-reference__group">
+                <h3>Mouse movement</h3>
+                <p>
+                  Say
+                  <span class="command-reference__example">“mouse left|right|up|down &lt;N&gt; pixels”</span>
+                  to move relative.
+                </p>
+                <p>
+                  Say <span class="command-reference__example">“mouse to x &lt;N&gt; y &lt;M&gt;”</span>
+                  to jump to absolute coordinates.
+                </p>
+              </li>
+              <li class="command-reference__group">
+                <h3>Clicks</h3>
+                <p>
+                  Use
+                  <span class="command-reference__example">“click”</span>,
+                  <span class="command-reference__example">“double click”</span>, or
+                  <span class="command-reference__example">“right click”</span>
+                  for pointer actions.
+                </p>
+              </li>
+              <li class="command-reference__group">
+                <h3>Typing</h3>
+                <p>
+                  Say
+                  <span class="command-reference__example">“type &lt;text&gt;”</span>
+                  to enter exactly what you speak.
+                </p>
+              </li>
+            </ul>
+          </div>
           <div class="command-panel__transcript">
             <h2>Transcript</h2>
             <div class="transcript__scroller" id="transcript-scroller" aria-live="polite">
