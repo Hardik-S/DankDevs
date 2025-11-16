@@ -38,6 +38,7 @@ export declare class VoiceListener {
     private handleWakeRecognitionError;
     private handleWakeRecognitionEnd;
     private restartWakeRecognition;
+    private ensureWakeRecognitionStopped;
     private attachAnalyser;
     private estimateNoiseBaseline;
     private updateMicrophoneStatus;

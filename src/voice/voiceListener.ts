@@ -165,7 +165,12 @@ export class VoiceListener {
   }
 
   private startWakeRecognitionLoop(): void {
-    if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
+    if (!this.wakeRecognition || this.wakeRecognitionSuspended) {
+      return;
+    }
+
+    this.ensureWakeRecognitionStopped();
+    if (!this.wakeRecognition) {
       return;
     }
 
@@ -215,14 +220,14 @@ export class VoiceListener {
 
   private handleWakeRecognitionError(event: WakeSpeechRecognitionErrorEvent): void {
     const message = event.error ?? 'unknown error';
+    this.wakeRecognizerActive = false;
     if (message === 'aborted') {
       if (this.suppressNextWakeAbortLog) {
         this.suppressNextWakeAbortLog = false;
         return;
       }
       console.info('[VoiceListener] Wake recognition aborted by browser — restarting listener.');
-      this.wakeRecognizerActive = false;
-      this.startWakeRecognitionLoop();
+      this.restartWakeRecognition();
       return;
     }
     console.warn(`[VoiceListener] Wake recognition error: ${message}`);
@@ -244,6 +249,7 @@ export class VoiceListener {
     if (!this.wakeRecognition) {
       return;
     }
+    this.ensureWakeRecognitionStopped();
     window.setTimeout(() => {
       if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
         return;
@@ -255,6 +261,21 @@ export class VoiceListener {
         console.error('VoiceListener failed to restart wake recognition', error);
       }
     }, 300);
+  }
+
+  private ensureWakeRecognitionStopped(): void {
+    if (!this.wakeRecognition) {
+      return;
+    }
+
+    if (this.wakeRecognizerActive) {
+      try {
+        this.wakeRecognition.abort();
+      } catch (error) {
+        console.warn('[VoiceListener] Failed to abort wake recognition cleanly', error);
+      }
+    }
+    this.wakeRecognizerActive = false;
   }
 
   private attachAnalyser(stream: MediaStream): void {
