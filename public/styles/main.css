@@ -124,6 +124,125 @@ body {
   min-height: 360px;
 }
 
+.desktop-icon {
+  position: fixed;
+  top: 64px;
+  left: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 5;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.35));
+}
+
+.desktop-icon-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  display: none;
+  z-index: 6;
+}
+
+.show-files-icon-preview .desktop-icon-preview {
+  display: block;
+}
+
+.desktop-icon-preview__line {
+  position: fixed;
+  color: #ffea00;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.desktop-icon-preview__line span {
+  position: absolute;
+  padding: 2px 6px;
+  background-color: rgba(0, 0, 0, 0.85);
+  border: 1px solid #ffea00;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.desktop-icon-preview__line--horizontal {
+  top: 80px;
+  left: 0;
+  width: 64px;
+  border-top: 2px dashed #ffea00;
+}
+
+.desktop-icon-preview__line--horizontal span {
+  top: -28px;
+  left: 32px;
+  transform: translateX(-50%);
+}
+
+.desktop-icon-preview__line--vertical {
+  left: 80px;
+  top: 0;
+  height: 64px;
+  border-left: 2px dashed #ffea00;
+}
+
+.desktop-icon-preview__line--vertical span {
+  left: 10px;
+  top: 32px;
+  transform: translateY(-50%);
+}
+
+.desktop-icon__image {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(180deg, #fffef0, #f0f0dc);
+  border: 2px solid #004040;
+  border-radius: 4px 4px 6px 6px;
+  position: relative;
+  box-shadow: inset 0 0 0 1px #ffffff;
+}
+
+.desktop-icon__binding {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #f4b03d, #fce069);
+  border-radius: 3px 3px 0 0;
+  border: 2px solid #004040;
+  border-bottom: none;
+}
+
+.desktop-icon__page-lines {
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  right: 6px;
+  height: 16px;
+  border-top: 2px solid #d4d4d4;
+  border-bottom: 2px solid #d4d4d4;
+}
+
+.desktop-icon__page-lines::before,
+.desktop-icon__page-lines::after {
+  content: '';
+  display: block;
+  border-top: 2px solid #d4d4d4;
+  margin-top: 4px;
+}
+
+.desktop-icon__label {
+  padding: 2px 6px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+}
+
 .window {
   width: 420px;
   border: 2px solid #000;
