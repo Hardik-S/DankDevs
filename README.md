@@ -1,13 +1,11 @@
-# Today in History
+# SoundGO
 
-A small React app that displays today's date along with a randomly selected historical event pulled from the public API at [history.muffinlabs.com](https://history.muffinlabs.com/).
-
-With the source now living in the repository root, GitHub Pages can build the production site directly from `npm run build` without any extra configuration.
+SoundGO is a browser-based Windows 95–style playground controlled by voice. The app runs entirely on GitHub Pages using Vite + TypeScript and is built according to the architecture defined in `MASTERPLAN.md`.
 
 ## Getting Started
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) 18 or newer
+- [Node.js](https://nodejs.org/) 18+
 - npm 9+
 
 ### Installation
@@ -24,7 +22,7 @@ npm run dev
 ```bash
 npm run build
 ```
-The compiled site is emitted to the `dist/` folder, which is what GitHub Pages should publish.
+The static assets are emitted to `dist/` for GitHub Pages.
 
 ### Preview the Production Build
 ```bash
@@ -33,16 +31,37 @@ npm run preview
 
 ## Project Structure
 ```
-├── index.html          # Vite entry point
-├── package.json        # Scripts and dependencies
+├── index.html
+├── assets/
+│   ├── css/
+│   └── icons/
 ├── src/
-│   ├── App.jsx         # Main UI
-│   ├── App.css         # Component styles
-│   ├── index.css       # Global styles
-│   └── main.jsx        # React/Vite bootstrap
-└── vite.config.js      # Vite configuration (base path `/` for Pages)
+│   ├── commands/
+│   │   ├── commandExecutor.ts
+│   │   ├── commandParser.ts
+│   │   └── commandTypes.ts
+│   ├── core/
+│   │   ├── config.ts
+│   │   ├── events.ts
+│   │   └── state.ts
+│   ├── ui/
+│   │   ├── transcriptPanel.ts
+│   │   ├── virtualCursor.ts
+│   │   └── win95Shell.ts
+│   ├── utils/
+│   │   └── math.ts
+│   ├── voice/
+│   │   ├── commandRecognizer.ts
+│   │   └── voiceListener.ts
+│   ├── styles/
+│   │   └── base.css
+│   └── main.ts
+├── MASTERPLAN.md
+├── AGENTS.md
+└── WORKSTREAM_RESERVATIONS.md
 ```
 
-## Deployment Notes
-- The project is configured with `base: '/'` so GitHub Pages can serve it from the root of the repository.
-- Make sure the Pages workflow runs `npm ci && npm run build` and publishes the `dist/` directory.
+## Development Notes
+- Always read `MASTERPLAN.md` before contributing; it defines the scope, layout, and command grammar.
+- `AGENTS.md` explains how to reserve a workstream so teammates do not overwrite each other.
+- Voice capture is currently simulated through the manual command form in the transcript panel, which feeds the parser/executor pipeline. Real speech input can be added inside `src/voice/` without touching other workstreams.

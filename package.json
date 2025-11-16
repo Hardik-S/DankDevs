@@ -1,7 +1,7 @@
 {
-  "name": "today-in-history",
-  "version": "1.0.0",
-  "description": "A simple React app that shows today's date and a fun historical fact.",
+  "name": "soundgo",
+  "version": "0.1.0",
+  "description": "A Windows 95–style voice-driven playground built per MASTERPLAN.md.",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,19 +9,16 @@
     "preview": "vite preview"
   },
   "keywords": [
-    "react",
-    "vite",
-    "history",
-    "github-pages"
+    "soundgo",
+    "voice",
+    "win95",
+    "vite"
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.1",
+    "typescript": "^5.7.2",
     "vite": "^7.2.2"
   }
 }
