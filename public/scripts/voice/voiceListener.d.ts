@@ -19,12 +19,16 @@ export declare class VoiceListener {
     private noiseBaseline;
     private wakeRecognition;
     private wakeRecognizerActive;
+    private wakeRecognitionSuspended;
+    private suppressNextWakeAbortLog;
     private lastWakeTimestamp;
     private readonly wakeDebounceMs;
     private readonly wakePhrase;
     constructor(bus: EventBus<VoiceEvents>);
     start(): void;
     simulateWake(): void;
+    suspendWakeRecognition(): void;
+    resumeWakeRecognition(): void;
     private readyMicrophonePipeline;
     private initializeWakePhraseDetection;
     private getSpeechRecognitionConstructor;

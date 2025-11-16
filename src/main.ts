@@ -80,12 +80,15 @@ function logTranscript(rawText: string, resultStatus: TranscriptResultStatus, me
 }
 
 voiceBus.on('WAKE', () => {
+  voiceListener.suspendWakeRecognition();
   setStatus('LISTENING');
   commandRecognizer.capture();
 });
 
 commandBus.on('COMMAND_RECOGNIZED', ({ rawText }) => {
+  voiceListener.resumeWakeRecognition();
   const parseResult = parser.parse(rawText);
+  setStatus('IDLE');
   if (!parseResult.ok) {
     logTranscript(rawText, 'ERROR', parseResult.message);
     return;
@@ -94,8 +97,19 @@ commandBus.on('COMMAND_RECOGNIZED', ({ rawText }) => {
   const { command } = parseResult;
   const executionResult = executor.execute(command);
   shell.boot();
-  setStatus('IDLE');
   logTranscript(rawText, mapExecutionStatusToTranscriptStatus(executionResult.status), executionResult.message, command);
+});
+
+commandBus.on('COMMAND_ERROR', ({ message }) => {
+  voiceListener.resumeWakeRecognition();
+  setStatus('IDLE');
+  logTranscript('[command not captured]', 'ERROR', message);
+});
+
+commandBus.on('COMMAND_TIMEOUT', ({ message }) => {
+  voiceListener.resumeWakeRecognition();
+  setStatus('IDLE');
+  logTranscript('[no speech detected]', 'WARNING', message);
 });
 
 function mapExecutionStatusToTranscriptStatus(status: ExecutionStatus): TranscriptResultStatus {
