@@ -1,5 +1,5 @@
 // WS5 — Transcript & UX panel.
-import type { TranscriptEntry } from '../core/state.js';
+import type { TranscriptEntry, TranscriptResultStatus } from '../core/state.js';
 
 export interface TranscriptPanelOptions {
   container: HTMLElement;
@@ -22,8 +22,8 @@ export class TranscriptPanel {
 
   private renderEntry(entry: TranscriptEntry): string {
     const parsedSummary = entry.parsedCommand ?? '—';
-    const resultText = entry.result ?? 'Pending';
-    const resultVariant = this.getResultVariant(entry.result);
+    const resultText = entry.result?.message ?? 'Pending';
+    const resultVariant = this.getResultVariant(entry.result?.status);
     const displayTimestamp = this.formatTimestamp(entry.timestamp);
 
     return `
@@ -51,13 +51,15 @@ export class TranscriptPanel {
     return date.toLocaleTimeString();
   }
 
-  private getResultVariant(result?: string): string {
-    if (!result) {
+  private getResultVariant(status?: TranscriptResultStatus): string {
+    if (!status) {
       return 'transcript__result--pending';
     }
-    const normalized = result.toLowerCase();
-    if (normalized.includes('error') || normalized.includes('fail') || normalized.includes('unrecognized')) {
+    if (status === 'ERROR') {
       return 'transcript__result--error';
+    }
+    if (status === 'WARNING') {
+      return 'transcript__result--warning';
     }
     return 'transcript__result--ok';
   }
