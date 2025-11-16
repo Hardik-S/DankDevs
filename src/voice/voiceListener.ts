@@ -57,6 +57,8 @@ export class VoiceListener {
   private noiseBaseline = 0;
   private wakeRecognition: WakeSpeechRecognitionInstance | null = null;
   private wakeRecognizerActive = false;
+  private wakeRecognitionSuspended = false;
+  private suppressNextWakeAbortLog = false;
   private lastWakeTimestamp = 0;
   private readonly wakeDebounceMs = 1500;
   private readonly wakePhrase = 'hey go';
@@ -70,6 +72,24 @@ export class VoiceListener {
 
   simulateWake(): void {
     this.bus.emit('WAKE', { timestamp: new Date().toISOString() });
+  }
+
+  suspendWakeRecognition(): void {
+    this.wakeRecognitionSuspended = true;
+    if (this.wakeRecognition && this.wakeRecognizerActive) {
+      this.suppressNextWakeAbortLog = true;
+      try {
+        this.wakeRecognition.abort();
+      } catch (error) {
+        console.warn('[VoiceListener] Failed to suspend wake recognition cleanly', error);
+      }
+      this.wakeRecognizerActive = false;
+    }
+  }
+
+  resumeWakeRecognition(): void {
+    this.wakeRecognitionSuspended = false;
+    this.startWakeRecognitionLoop();
   }
 
   private async readyMicrophonePipeline(): Promise<void> {
@@ -145,7 +165,7 @@ export class VoiceListener {
   }
 
   private startWakeRecognitionLoop(): void {
-    if (!this.wakeRecognition || this.wakeRecognizerActive) {
+    if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
       return;
     }
 
@@ -195,6 +215,10 @@ export class VoiceListener {
 
   private handleWakeRecognitionError(event: WakeSpeechRecognitionErrorEvent): void {
     const message = event.error ?? 'unknown error';
+    if (message === 'aborted' && this.suppressNextWakeAbortLog) {
+      this.suppressNextWakeAbortLog = false;
+      return;
+    }
     console.warn(`[VoiceListener] Wake recognition error: ${message}`);
     if (message === 'not-allowed' || message === 'service-not-allowed') {
       this.updateMicrophoneStatus('ERROR', 'Wake recognition blocked by browser permissions.');
@@ -205,7 +229,9 @@ export class VoiceListener {
 
   private handleWakeRecognitionEnd(): void {
     this.wakeRecognizerActive = false;
-    this.restartWakeRecognition();
+    if (!this.wakeRecognitionSuspended) {
+      this.restartWakeRecognition();
+    }
   }
 
   private restartWakeRecognition(): void {
@@ -213,7 +239,7 @@ export class VoiceListener {
       return;
     }
     window.setTimeout(() => {
-      if (!this.wakeRecognition || this.wakeRecognizerActive) {
+      if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
         return;
       }
       try {

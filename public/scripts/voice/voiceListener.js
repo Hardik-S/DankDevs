@@ -8,6 +8,8 @@ export class VoiceListener {
         this.noiseBaseline = 0;
         this.wakeRecognition = null;
         this.wakeRecognizerActive = false;
+        this.wakeRecognitionSuspended = false;
+        this.suppressNextWakeAbortLog = false;
         this.lastWakeTimestamp = 0;
         this.wakeDebounceMs = 1500;
         this.wakePhrase = 'hey go';
@@ -18,6 +20,23 @@ export class VoiceListener {
     }
     simulateWake() {
         this.bus.emit('WAKE', { timestamp: new Date().toISOString() });
+    }
+    suspendWakeRecognition() {
+        this.wakeRecognitionSuspended = true;
+        if (this.wakeRecognition && this.wakeRecognizerActive) {
+            this.suppressNextWakeAbortLog = true;
+            try {
+                this.wakeRecognition.abort();
+            }
+            catch (error) {
+                console.warn('[VoiceListener] Failed to suspend wake recognition cleanly', error);
+            }
+            this.wakeRecognizerActive = false;
+        }
+    }
+    resumeWakeRecognition() {
+        this.wakeRecognitionSuspended = false;
+        this.startWakeRecognitionLoop();
     }
     async readyMicrophonePipeline() {
         var _a;
@@ -82,7 +101,7 @@ export class VoiceListener {
         return (_b = (_a = extendedWindow.SpeechRecognition) !== null && _a !== void 0 ? _a : extendedWindow.webkitSpeechRecognition) !== null && _b !== void 0 ? _b : null;
     }
     startWakeRecognitionLoop() {
-        if (!this.wakeRecognition || this.wakeRecognizerActive) {
+        if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
             return;
         }
         try {
@@ -127,6 +146,10 @@ export class VoiceListener {
     handleWakeRecognitionError(event) {
         var _a;
         const message = (_a = event.error) !== null && _a !== void 0 ? _a : 'unknown error';
+        if (message === 'aborted' && this.suppressNextWakeAbortLog) {
+            this.suppressNextWakeAbortLog = false;
+            return;
+        }
         console.warn(`[VoiceListener] Wake recognition error: ${message}`);
         if (message === 'not-allowed' || message === 'service-not-allowed') {
             this.updateMicrophoneStatus('ERROR', 'Wake recognition blocked by browser permissions.');
@@ -136,14 +159,16 @@ export class VoiceListener {
     }
     handleWakeRecognitionEnd() {
         this.wakeRecognizerActive = false;
-        this.restartWakeRecognition();
+        if (!this.wakeRecognitionSuspended) {
+            this.restartWakeRecognition();
+        }
     }
     restartWakeRecognition() {
         if (!this.wakeRecognition) {
             return;
         }
         window.setTimeout(() => {
-            if (!this.wakeRecognition || this.wakeRecognizerActive) {
+            if (!this.wakeRecognition || this.wakeRecognizerActive || this.wakeRecognitionSuspended) {
                 return;
             }
             try {
