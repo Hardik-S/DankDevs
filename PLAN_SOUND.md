@@ -104,18 +104,6 @@ Document concrete behaviors, validation rules, and system interactions for every
 3. **Timeouts:** listening window (wake → command) defaults to 5 seconds; configurable via `src/core/config.ts`.
 4. **Extensibility:** future sound commands (scroll, drag) should follow same parse/execute/log structure and extend the command type union in `MASTERPLAN.md`.
 
-## 7. Sound Command Execution Checklist
-
-| Step | Description | Status |
-| --- | --- | --- |
-| 1 | Confirm wake phrase detection pipeline is listening (`VoiceListener` armed, debounce active). | [ ] |
-| 2 | Capture the immediate utterance after "Hey Go" and forward raw text to WS3. | [ ] |
-| 3 | Strip wake prefix, normalize whitespace/case, and select the matching grammar. | [ ] |
-| 4 | Validate parsed payloads (numbers, coordinates, focus targets) and build typed command objects. | [ ] |
-| 5 | Execute the command via the appropriate WS3/WS4 APIs, clamping or rejecting invalid inputs. | [ ] |
-| 6 | Log transcript entry with timestamp, raw text, parsed summary, and execution outcome. | [ ] |
-| 7 | Reset listener state (Idle) or prompt retry on error, respecting timeout rules. | [ ] |
-
 ---
 
 _Last updated: synced with MASTERPLAN.md v1.0._
