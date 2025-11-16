@@ -113,7 +113,7 @@ Document concrete behaviors, validation rules, and system interactions for every
 | [x] 3. Capture immediate utterance | WS2 — CommandRecognizer buffers post-wake speech and emits raw text | Completed — CommandRecognizer now starts a SpeechRecognition session post-wake, captures the next final transcript, and emits it on the command bus |
 | [x] 4. Normalize transcript | WS3 — Parser trims wake words, lowercases for matching, preserves display casing | Completed — Parser now uses a shared normalizer that strips "Hey Go" and builds lower-cased text without losing display casing |
 | [x] 5. Parse into typed command | WS3 — CommandParser validates grammar and returns command object or error | Completed — CommandParser now normalizes wake text, matches every documented grammar (mouse relative/absolute, clicks, type, press), parses spoken numbers 0–1000+, and emits typed commands or rich parse errors |
-| [ ] 6. Execute command | WS3 — CommandExecutor clamps values, drives virtual mouse/keyboard, handles errors | Pending |
+| [x] 6. Execute command | WS3 — CommandExecutor clamps values, drives virtual mouse/keyboard, handles errors | Completed — CommandExecutor now clamps cursor movement, hit-tests the desktop for clicks, simulates double/right clicks, injects typed text, dispatches key combos, and returns structured execution results |
 | [ ] 7. Log outcome to transcript | WS5 — TranscriptLogger records timestamp, raw text, parsed summary, result | Pending |
 
 ---

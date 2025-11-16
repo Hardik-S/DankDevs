@@ -17,6 +17,9 @@ const root = document.querySelector('.win95-shell');
 const cursorLayer = document.querySelector('.desktop-pane .virtual-cursor');
 const transcriptContainer = document.querySelector('#transcript-scroller');
 const transcriptList = document.querySelector('#transcript');
+const statusIndicatorEl = document.querySelector('[data-status-indicator]');
+const statusLabelEl = document.querySelector('[data-status-label]');
+const commandHistoryListEl = document.querySelector('#command-history');
 if (!desktopPane || !root || !cursorLayer || !transcriptList || !transcriptContainer) {
     throw new Error('SoundGO root elements missing');
 }
@@ -25,17 +28,21 @@ const transcriptPanel = new TranscriptPanel({ container: transcriptContainer, li
 const voiceListener = new VoiceListener(voiceBus);
 const commandRecognizer = new CommandRecognizer(commandBus);
 function renderFromSnapshot(snapshot) {
-    statusIndicatorEl.dataset.status = snapshot.status;
-    statusIndicatorEl.classList.toggle('status-indicator--listening', snapshot.status === 'LISTENING');
-    statusIndicatorEl.classList.toggle('status-indicator--idle', snapshot.status === 'IDLE');
-    statusLabelEl.textContent = snapshot.status === 'LISTENING' ? 'Listening' : 'Idle';
-    if (snapshot.commandHistory.length === 0) {
-        commandHistoryListEl.innerHTML = '<li class="command-history__empty">No commands yet. Say “Hey Go” to begin.</li>';
+    if (statusIndicatorEl && statusLabelEl) {
+        statusIndicatorEl.dataset.status = snapshot.status;
+        statusIndicatorEl.classList.toggle('status-indicator--listening', snapshot.status === 'LISTENING');
+        statusIndicatorEl.classList.toggle('status-indicator--idle', snapshot.status === 'IDLE');
+        statusLabelEl.textContent = snapshot.status === 'LISTENING' ? 'Listening' : 'Idle';
     }
-    else {
-        commandHistoryListEl.innerHTML = snapshot.commandHistory
-            .map((summary) => `<li class="command-history__item">${summary}</li>`)
-            .join('');
+    if (commandHistoryListEl) {
+        if (snapshot.commandHistory.length === 0) {
+            commandHistoryListEl.innerHTML = '<li class="command-history__empty">No commands yet. Say “Hey Go” to begin.</li>';
+        }
+        else {
+            commandHistoryListEl.innerHTML = snapshot.commandHistory
+                .map((summary) => `<li class="command-history__item">${summary}</li>`)
+                .join('');
+        }
     }
     transcriptPanel.render(snapshot.transcript);
 }
@@ -46,7 +53,7 @@ function setStatus(status) {
     renderFromSnapshot(snapshot);
 }
 function appendTranscript(rawText, command, result) {
-    state.update((draft) => {
+    const snapshot = state.update((draft) => {
         const timestamp = new Date();
         const entry = {
             id: crypto.randomUUID(),
@@ -75,10 +82,10 @@ commandBus.on('COMMAND_RECOGNIZED', ({ rawText }) => {
         return;
     }
     const { command } = parseResult;
-    executor.execute(command);
+    const executionResult = executor.execute(command);
     shell.boot();
     setStatus('IDLE');
-    appendTranscript(rawText, command, 'Executed');
+    appendTranscript(rawText, command, executionResult.message);
 });
 shell.boot();
 voiceListener.start();
