@@ -1,2 +1,1 @@
-# DankDevs
-Stupid Hackathon
+Hello World
