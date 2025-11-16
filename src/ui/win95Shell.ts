@@ -4,6 +4,8 @@ import { VirtualCursor } from './virtualCursor.js';
 
 export interface Win95ShellOptions {
   root: HTMLElement;
+  desktopPane: HTMLElement;
+  cursorLayer: HTMLElement;
   state: State;
 }
 
@@ -14,7 +16,8 @@ export class Win95Shell {
 
   constructor(private options: Win95ShellOptions) {
     this.cursor = new VirtualCursor({
-      element: options.root.querySelector('.virtual-cursor') as HTMLElement,
+      element: options.cursorLayer,
+      workspace: options.desktopPane,
       state: options.state,
     });
     this.taskbarClock = options.root.querySelector('.taskbar__tray');

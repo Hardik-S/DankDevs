@@ -12,12 +12,14 @@ const voiceBus = new EventBus();
 const commandBus = new EventBus();
 const parser = new CommandParser();
 const executor = new CommandExecutor(state);
+const desktopPane = document.querySelector('.desktop-pane');
 const root = document.querySelector('.win95-shell');
+const cursorLayer = document.querySelector('.desktop-pane .virtual-cursor');
 const transcriptList = document.querySelector('#transcript');
-if (!root || !transcriptList) {
+if (!desktopPane || !root || !cursorLayer || !transcriptList) {
     throw new Error('SoundGO root elements missing');
 }
-const shell = new Win95Shell({ root, state });
+const shell = new Win95Shell({ root, desktopPane, cursorLayer, state });
 const transcriptPanel = new TranscriptPanel({ list: transcriptList, state });
 const voiceListener = new VoiceListener(voiceBus);
 const commandRecognizer = new CommandRecognizer(commandBus);
