@@ -9,26 +9,46 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
   background: linear-gradient(120deg, #008080 0%, #0f8b8d 100%);
 }
 
 #app {
-  width: 100%;
-  max-width: 1200px;
+  width: 100vw;
+  height: 100vh;
   padding: 24px;
 }
 
-.workspace {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
+.ui-root {
+  display: flex;
+  width: 100%;
+  height: 100%;
   gap: 16px;
-  height: 90vh;
+}
+
+.desktop-pane {
+  flex: 0 0 80%;
+  max-width: 80%;
+  display: flex;
+}
+
+.control-pane {
+  flex: 0 0 20%;
+  max-width: 20%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 2px solid #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
 }
 
 .win95-shell {
@@ -88,16 +108,6 @@ body {
 
 .start-button {
   font-weight: bold;
-}
-
-.command-panel {
-  background-color: rgba(255, 255, 255, 0.85);
-  border: 2px solid #fff;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
 }
 
 .command-panel__reference ul,

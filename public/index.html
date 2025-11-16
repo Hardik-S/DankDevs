@@ -9,34 +9,36 @@
   </head>
   <body>
     <div id="app">
-      <main class="workspace">
-        <section class="win95-shell" aria-label="Win95 desktop emulator">
-          <div class="win95-shell__desktop" role="presentation">
-            <div class="window window--primary">
-              <header class="window__titlebar">
-                <span>SoundGO Notes</span>
-                <div class="window__actions">
-                  <button aria-label="Minimize">_</button>
-                  <button aria-label="Maximize">▢</button>
-                  <button aria-label="Close">X</button>
+      <div class="ui-root">
+        <section class="desktop-pane" aria-label="Win95 desktop emulator">
+          <div class="win95-shell">
+            <div class="win95-shell__desktop" role="presentation">
+              <div class="window window--primary">
+                <header class="window__titlebar">
+                  <span>SoundGO Notes</span>
+                  <div class="window__actions">
+                    <button aria-label="Minimize">_</button>
+                    <button aria-label="Maximize">▢</button>
+                    <button aria-label="Close">X</button>
+                  </div>
+                </header>
+                <div class="window__body">
+                  <p>Voice controlled demo workspace.</p>
+                  <textarea placeholder="Dictation target" rows="5"></textarea>
                 </div>
-              </header>
-              <div class="window__body">
-                <p>Voice controlled demo workspace.</p>
-                <textarea placeholder="Dictation target" rows="5"></textarea>
               </div>
             </div>
-          </div>
-          <div class="win95-shell__taskbar">
-            <button class="start-button">Start</button>
-            <div class="taskbar__tasks">
-              <span>SoundGO</span>
+            <div class="win95-shell__taskbar">
+              <button class="start-button">Start</button>
+              <div class="taskbar__tasks">
+                <span>SoundGO</span>
+              </div>
+              <div class="taskbar__tray">12:00</div>
             </div>
-            <div class="taskbar__tray">12:00</div>
+            <div class="virtual-cursor" role="presentation"></div>
           </div>
-          <div class="virtual-cursor" role="presentation"></div>
         </section>
-        <section class="command-panel" aria-label="Command reference and transcript">
+        <section class="control-pane" aria-label="Command reference and transcript">
           <div class="command-panel__reference">
             <h2>Command Reference</h2>
             <ul>
@@ -51,7 +53,7 @@
             <ul id="transcript"></ul>
           </div>
         </section>
-      </main>
+      </div>
     </div>
     <script type="module" src="./scripts/main.js"></script>
   </body>
