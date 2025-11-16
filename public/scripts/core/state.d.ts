@@ -1,4 +1,5 @@
 import type { Command } from '../types/commands.js';
+export type ListeningStatus = 'IDLE' | 'LISTENING';
 export interface CursorState {
     x: number;
     y: number;
@@ -14,6 +15,8 @@ export interface AppState {
     cursor: CursorState;
     transcript: TranscriptEntry[];
     lastCommand?: Command;
+    commandHistory: string[];
+    status: ListeningStatus;
 }
 export declare class State {
     private state;
