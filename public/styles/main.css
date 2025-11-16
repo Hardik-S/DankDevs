@@ -380,8 +380,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 48px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   pointer-events: none;
   z-index: 10;
   display: flex;
@@ -390,8 +390,9 @@ body {
   transform: translate(0, 0);
 }
 
-.virtual-cursor svg {
-  width: 48px;
-  height: 96px;
+.virtual-cursor img {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
 }
