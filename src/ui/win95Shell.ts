@@ -9,15 +9,39 @@ export interface Win95ShellOptions {
 
 export class Win95Shell {
   private cursor: VirtualCursor;
+  private taskbarClock: HTMLElement | null;
+  private clockIntervalId: number | null = null;
 
   constructor(private options: Win95ShellOptions) {
     this.cursor = new VirtualCursor({
       element: options.root.querySelector('.virtual-cursor') as HTMLElement,
       state: options.state,
     });
+    this.taskbarClock = options.root.querySelector('.taskbar__tray');
   }
 
   boot(): void {
     this.cursor.render();
+    this.mountTaskbarClock();
+  }
+
+  private mountTaskbarClock(): void {
+    if (!this.taskbarClock) {
+      return;
+    }
+
+    const renderTime = (): void => {
+      const now = new Date();
+      this.taskbarClock!.textContent = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    };
+
+    renderTime();
+    if (this.clockIntervalId) {
+      window.clearInterval(this.clockIntervalId);
+    }
+    this.clockIntervalId = window.setInterval(renderTime, 1000);
   }
 }
