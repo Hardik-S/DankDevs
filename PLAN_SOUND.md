@@ -111,8 +111,8 @@ Document concrete behaviors, validation rules, and system interactions for every
 | [x] 1. Ready microphone pipeline | WS2 — VoiceListener ensures permissions + idle baseline | Completed — VoiceListener now requests mic access, validates support, and measures an idle noise baseline |
 | [x] 2. Detect wake phrase "Hey Go" | WS2 — VoiceListener raises `onWake()` and debounces repeats | Completed — VoiceListener now listens via SpeechRecognition, emits `WAKE`, and debounces repeats |
 | [x] 3. Capture immediate utterance | WS2 — CommandRecognizer buffers post-wake speech and emits raw text | Completed — CommandRecognizer now starts a SpeechRecognition session post-wake, captures the next final transcript, and emits it on the command bus |
-| [ ] 4. Normalize transcript | WS3 — Parser trims wake words, lowercases for matching, preserves display casing | Pending |
-| [ ] 5. Parse into typed command | WS3 — CommandParser validates grammar and returns command object or error | Pending |
+| [x] 4. Normalize transcript | WS3 — Parser trims wake words, lowercases for matching, preserves display casing | Completed — Parser now uses a shared normalizer that strips "Hey Go" and builds lower-cased text without losing display casing |
+| [x] 5. Parse into typed command | WS3 — CommandParser validates grammar and returns command object or error | Completed — CommandParser now normalizes wake text, matches every documented grammar (mouse relative/absolute, clicks, type, press), parses spoken numbers 0–1000+, and emits typed commands or rich parse errors |
 | [ ] 6. Execute command | WS3 — CommandExecutor clamps values, drives virtual mouse/keyboard, handles errors | Pending |
 | [ ] 7. Log outcome to transcript | WS5 — TranscriptLogger records timestamp, raw text, parsed summary, result | Pending |
 

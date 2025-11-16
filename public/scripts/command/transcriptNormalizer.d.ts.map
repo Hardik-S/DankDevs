@@ -1,0 +1,1 @@
+{"version":3,"file":"transcriptNormalizer.d.ts","sourceRoot":"","sources":["../../../src/command/transcriptNormalizer.ts"],"names":[],"mappings":"AAEA;;;GAGG;AACH,MAAM,WAAW,qBAAqB;IACpC;;;OAGG;IACH,WAAW,EAAE,MAAM,CAAC;IACpB;;OAEG;IACH,aAAa,EAAE,MAAM,CAAC;IACtB;;OAEG;IACH,iBAAiB,EAAE,OAAO,CAAC;CAC5B;AAID,wBAAgB,oBAAoB,CAAC,OAAO,EAAE,MAAM,GAAG,qBAAqB,CAU3E"}
