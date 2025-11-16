@@ -104,6 +104,18 @@ Document concrete behaviors, validation rules, and system interactions for every
 3. **Timeouts:** listening window (wake → command) defaults to 5 seconds; configurable via `src/core/config.ts`.
 4. **Extensibility:** future sound commands (scroll, drag) should follow same parse/execute/log structure and extend the command type union in `MASTERPLAN.md`.
 
+## 7. 7x3 Checklist of End-to-End Steps
+
+| Step | Owner / Module | Status |
+| --- | --- | --- |
+| [ ] 1. Ready microphone pipeline | WS2 — VoiceListener ensures permissions + idle baseline | Pending |
+| [ ] 2. Detect wake phrase "Hey Go" | WS2 — VoiceListener raises `onWake()` and debounces repeats | Pending |
+| [ ] 3. Capture immediate utterance | WS2 — CommandRecognizer buffers post-wake speech and emits raw text | Pending |
+| [ ] 4. Normalize transcript | WS3 — Parser trims wake words, lowercases for matching, preserves display casing | Pending |
+| [ ] 5. Parse into typed command | WS3 — CommandParser validates grammar and returns command object or error | Pending |
+| [ ] 6. Execute command | WS3 — CommandExecutor clamps values, drives virtual mouse/keyboard, handles errors | Pending |
+| [ ] 7. Log outcome to transcript | WS5 — TranscriptLogger records timestamp, raw text, parsed summary, result | Pending |
+
 ---
 
 _Last updated: synced with MASTERPLAN.md v1.0._
