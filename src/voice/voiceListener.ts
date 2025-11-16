@@ -215,8 +215,14 @@ export class VoiceListener {
 
   private handleWakeRecognitionError(event: WakeSpeechRecognitionErrorEvent): void {
     const message = event.error ?? 'unknown error';
-    if (message === 'aborted' && this.suppressNextWakeAbortLog) {
-      this.suppressNextWakeAbortLog = false;
+    if (message === 'aborted') {
+      if (this.suppressNextWakeAbortLog) {
+        this.suppressNextWakeAbortLog = false;
+        return;
+      }
+      console.info('[VoiceListener] Wake recognition aborted by browser — restarting listener.');
+      this.wakeRecognizerActive = false;
+      this.startWakeRecognitionLoop();
       return;
     }
     console.warn(`[VoiceListener] Wake recognition error: ${message}`);
