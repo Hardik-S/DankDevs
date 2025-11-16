@@ -135,13 +135,52 @@ body {
   gap: 8px;
   padding: 4px 8px;
   background-color: #c0c0c0;
-  border-top: 2px solid #999;
+  border-top: 3px solid #f5f5f5;
+  border-left: 3px solid #f5f5f5;
+  border-right: 3px solid #7b7b7b;
+  border-bottom: 3px solid #7b7b7b;
   width: 100%;
   min-height: 48px;
+  flex-shrink: 0;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #4a4a4a;
 }
 
 .start-button {
   font-weight: bold;
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  padding: 4px 12px;
+  background-color: #dcdcdc;
+  border: 2px solid;
+  border-color: #ffffff #5d5d5d #5d5d5d #ffffff;
+  box-shadow: 1px 1px 0 #00000055;
+  cursor: pointer;
+}
+
+.start-button:active {
+  border-color: #5d5d5d #ffffff #ffffff #5d5d5d;
+  box-shadow: inset 1px 1px 0 #00000055;
+}
+
+.taskbar__tasks {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 8px;
+  border: 2px inset #7b7b7b;
+  background: linear-gradient(180deg, #d6d6d6, #bdbdbd);
+  font-size: 0.85rem;
+}
+
+.taskbar__tray {
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border: 2px inset #7b7b7b;
+  background-color: #1b1b1b;
+  color: #f0f0f0;
+  min-width: 68px;
+  text-align: center;
 }
 
 .command-panel__reference ul,
