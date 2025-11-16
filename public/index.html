@@ -1,0 +1,58 @@
+<!-- WS1/WS5 — UI shell + transcript layout. -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoundGO</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <main class="workspace">
+        <section class="win95-shell" aria-label="Win95 desktop emulator">
+          <div class="win95-shell__desktop" role="presentation">
+            <div class="window window--primary">
+              <header class="window__titlebar">
+                <span>SoundGO Notes</span>
+                <div class="window__actions">
+                  <button aria-label="Minimize">_</button>
+                  <button aria-label="Maximize">▢</button>
+                  <button aria-label="Close">X</button>
+                </div>
+              </header>
+              <div class="window__body">
+                <p>Voice controlled demo workspace.</p>
+                <textarea placeholder="Dictation target" rows="5"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="win95-shell__taskbar">
+            <button class="start-button">Start</button>
+            <div class="taskbar__tasks">
+              <span>SoundGO</span>
+            </div>
+            <div class="taskbar__tray">12:00</div>
+          </div>
+          <div class="virtual-cursor" role="presentation"></div>
+        </section>
+        <section class="command-panel" aria-label="Command reference and transcript">
+          <div class="command-panel__reference">
+            <h2>Command Reference</h2>
+            <ul>
+              <li>"Hey Go" + "mouse left 230 pixels"</li>
+              <li>"Hey Go" + "mouse to x 200 y 100"</li>
+              <li>"Hey Go" + "click"</li>
+              <li>"Hey Go" + "type hello world"</li>
+            </ul>
+          </div>
+          <div class="command-panel__transcript">
+            <h2>Transcript</h2>
+            <ul id="transcript"></ul>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./scripts/main.js"></script>
+  </body>
+</html>
