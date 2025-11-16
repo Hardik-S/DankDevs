@@ -44,11 +44,12 @@ voiceBus.on('WAKE', () => {
     commandRecognizer.capture();
 });
 commandBus.on('COMMAND_RECOGNIZED', ({ rawText }) => {
-    const command = parser.parse(rawText);
-    if (!command) {
-        appendTranscript(rawText, null, 'Unrecognized command');
+    const parseResult = parser.parse(rawText);
+    if (!parseResult.ok) {
+        appendTranscript(rawText, null, parseResult.message);
         return;
     }
+    const { command } = parseResult;
     executor.execute(command);
     shell.boot();
     appendTranscript(rawText, command, 'Executed');
