@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SoundGO</title>
     <link rel="stylesheet" href="./styles/main.css" />
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('preview') === 'files-icon') {
+          document.documentElement.classList.add('show-files-icon-preview');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app">
@@ -25,27 +33,19 @@
           </div>
           <div class="win95-shell">
             <div class="win95-shell__desktop" role="presentation">
-              <div class="window window--primary" role="dialog" aria-labelledby="soundgo-notes-title">
-                <header class="window__titlebar">
-                  <span id="soundgo-notes-title">SoundGO Notes</span>
-                  <div class="window__actions">
-                    <button aria-label="Minimize">_</button>
-                    <button aria-label="Maximize">▢</button>
-                    <button aria-label="Close">X</button>
-                  </div>
-                </header>
-                <div class="window__body">
-                  <div class="window__notepad" aria-label="Dictation notepad">
-                    <label for="dictation-pad">Voice dictation buffer</label>
-                    <textarea id="dictation-pad" placeholder="Start talking to fill this pad" rows="6"></textarea>
-                  </div>
-                  <div class="window__meme-file" role="group" aria-label="Meme file placeholder">
-                    <div class="meme-file__icon" aria-hidden="true">😂</div>
-                    <div class="meme-file__meta">
-                      <strong>meme-file.bmp</strong>
-                      <span>Double-click to unleash the lolz</span>
-                    </div>
-                  </div>
+              <div class="desktop-icon desktop-icon--notes" role="button" tabindex="0" aria-label="SoundGO files icon">
+                <div class="desktop-icon__image" aria-hidden="true">
+                  <div class="desktop-icon__binding"></div>
+                  <div class="desktop-icon__page-lines"></div>
+                </div>
+                <span class="desktop-icon__label">files</span>
+              </div>
+              <div class="desktop-icon-preview" aria-hidden="true">
+                <div class="desktop-icon-preview__line desktop-icon-preview__line--horizontal">
+                  <span>64px</span>
+                </div>
+                <div class="desktop-icon-preview__line desktop-icon-preview__line--vertical">
+                  <span>64px</span>
                 </div>
               </div>
             </div>
