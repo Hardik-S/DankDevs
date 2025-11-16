@@ -1,6 +1,45 @@
 // WS2 — Voice wake phrase detection.
 import type { EventBus } from '../core/events.js';
 
+type WakeSpeechRecognitionConstructor = new () => WakeSpeechRecognitionInstance;
+
+interface WakeSpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface WakeSpeechRecognitionResult extends ArrayLike<WakeSpeechRecognitionAlternative> {
+  isFinal: boolean;
+  [index: number]: WakeSpeechRecognitionAlternative;
+}
+
+interface WakeSpeechRecognitionResultList extends ArrayLike<WakeSpeechRecognitionResult> {
+  [index: number]: WakeSpeechRecognitionResult;
+}
+
+interface WakeSpeechRecognitionEvent {
+  resultIndex: number;
+  results: WakeSpeechRecognitionResultList;
+}
+
+interface WakeSpeechRecognitionErrorEvent {
+  error: string;
+  message?: string;
+}
+
+interface WakeSpeechRecognitionInstance {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: ((event: WakeSpeechRecognitionEvent) => void) | null;
+  onerror: ((event: WakeSpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
 export type MicrophoneStatus = 'IDLE' | 'REQUESTING_PERMISSION' | 'READY' | 'ERROR' | 'UNSUPPORTED';
 
 export type VoiceEvents =
@@ -16,6 +55,11 @@ export class VoiceListener {
   private sourceNode: MediaStreamAudioSourceNode | null = null;
   private microphoneStatus: MicrophoneStatus = 'IDLE';
   private noiseBaseline = 0;
+  private wakeRecognition: WakeSpeechRecognitionInstance | null = null;
+  private wakeRecognizerActive = false;
+  private lastWakeTimestamp = 0;
+  private readonly wakeDebounceMs = 1500;
+  private readonly wakePhrase = 'hey go';
 
   constructor(private bus: EventBus<VoiceEvents>) {}
 
@@ -56,11 +100,129 @@ export class VoiceListener {
       this.attachAnalyser(stream);
       this.noiseBaseline = await this.estimateNoiseBaseline();
       this.updateMicrophoneStatus('READY');
+      this.initializeWakePhraseDetection();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown microphone error';
       console.error('VoiceListener microphone error:', error);
       this.updateMicrophoneStatus('ERROR', message);
     }
+  }
+
+  private initializeWakePhraseDetection(): void {
+    if (this.wakeRecognition) {
+      this.startWakeRecognitionLoop();
+      return;
+    }
+
+    const recognitionConstructor = this.getSpeechRecognitionConstructor();
+    if (!recognitionConstructor) {
+      console.warn('[VoiceListener] SpeechRecognition API unavailable — manual wake simulation only.');
+      return;
+    }
+
+    const recognition = new recognitionConstructor();
+    recognition.lang = 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event) => this.processWakeResults(event);
+    recognition.onerror = (event) => this.handleWakeRecognitionError(event);
+    recognition.onend = () => this.handleWakeRecognitionEnd();
+
+    this.wakeRecognition = recognition;
+    this.startWakeRecognitionLoop();
+  }
+
+  private getSpeechRecognitionConstructor(): WakeSpeechRecognitionConstructor | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    const extendedWindow = window as typeof window & {
+      SpeechRecognition?: WakeSpeechRecognitionConstructor;
+      webkitSpeechRecognition?: WakeSpeechRecognitionConstructor;
+    };
+    return extendedWindow.SpeechRecognition ?? extendedWindow.webkitSpeechRecognition ?? null;
+  }
+
+  private startWakeRecognitionLoop(): void {
+    if (!this.wakeRecognition || this.wakeRecognizerActive) {
+      return;
+    }
+
+    try {
+      this.wakeRecognition.start();
+      this.wakeRecognizerActive = true;
+      console.info('[VoiceListener] Listening for wake phrase "Hey Go"');
+    } catch (error) {
+      console.error('VoiceListener failed to start wake detection', error);
+    }
+  }
+
+  private processWakeResults(event: WakeSpeechRecognitionEvent): void {
+    for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      const result = event.results[index];
+      if (!result?.isFinal) {
+        continue;
+      }
+      const alternative = result[0];
+      if (!alternative?.transcript) {
+        continue;
+      }
+      this.detectWakePhrase(alternative.transcript);
+    }
+  }
+
+  private detectWakePhrase(transcript: string): void {
+    const normalized = transcript.trim().toLowerCase();
+    if (!normalized) {
+      return;
+    }
+
+    if (!normalized.includes(this.wakePhrase)) {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - this.lastWakeTimestamp < this.wakeDebounceMs) {
+      console.info('[VoiceListener] Wake phrase ignored due to debounce window.');
+      return;
+    }
+
+    this.lastWakeTimestamp = now;
+    this.bus.emit('WAKE', { timestamp: new Date().toISOString() });
+    console.info('[VoiceListener] Wake phrase detected.');
+  }
+
+  private handleWakeRecognitionError(event: WakeSpeechRecognitionErrorEvent): void {
+    const message = event.error ?? 'unknown error';
+    console.warn(`[VoiceListener] Wake recognition error: ${message}`);
+    if (message === 'not-allowed' || message === 'service-not-allowed') {
+      this.updateMicrophoneStatus('ERROR', 'Wake recognition blocked by browser permissions.');
+      return;
+    }
+    this.restartWakeRecognition();
+  }
+
+  private handleWakeRecognitionEnd(): void {
+    this.wakeRecognizerActive = false;
+    this.restartWakeRecognition();
+  }
+
+  private restartWakeRecognition(): void {
+    if (!this.wakeRecognition) {
+      return;
+    }
+    window.setTimeout(() => {
+      if (!this.wakeRecognition || this.wakeRecognizerActive) {
+        return;
+      }
+      try {
+        this.wakeRecognition.start();
+        this.wakeRecognizerActive = true;
+      } catch (error) {
+        console.error('VoiceListener failed to restart wake recognition', error);
+      }
+    }, 300);
   }
 
   private attachAnalyser(stream: MediaStream): void {
