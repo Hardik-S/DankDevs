@@ -11,7 +11,7 @@ export class TranscriptLogger {
         const timestamp = new Date();
         return this.state.update((draft) => {
             const entry = {
-                id: crypto.randomUUID(),
+                id: this.generateEntryId(),
                 timestamp: timestamp.toISOString(),
                 rawText,
                 result,
@@ -24,6 +24,13 @@ export class TranscriptLogger {
             }
             draft.transcript.push(entry);
         });
+    }
+    generateEntryId() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        const randomSuffix = Math.random().toString(16).slice(2, 10);
+        return `transcript-${Date.now()}-${randomSuffix}`;
     }
 }
 //# sourceMappingURL=transcriptLogger.js.map
