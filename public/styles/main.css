@@ -450,6 +450,10 @@ body {
   color: #8b0000;
 }
 
+.transcript__result--warning {
+  color: #b8860b;
+}
+
 .transcript__result--pending {
   color: #555;
 }

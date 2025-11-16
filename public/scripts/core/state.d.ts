@@ -4,12 +4,17 @@ export interface CursorState {
     x: number;
     y: number;
 }
+export type TranscriptResultStatus = 'SUCCESS' | 'ERROR' | 'WARNING' | 'INFO';
+export interface TranscriptResult {
+    status: TranscriptResultStatus;
+    message: string;
+}
 export interface TranscriptEntry {
     id: string;
     timestamp: string;
     rawText: string;
     parsedCommand?: string;
-    result?: string;
+    result?: TranscriptResult;
 }
 export interface AppState {
     cursor: CursorState;

@@ -12,10 +12,10 @@ export class TranscriptPanel {
         }
     }
     renderEntry(entry) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const parsedSummary = (_a = entry.parsedCommand) !== null && _a !== void 0 ? _a : '—';
-        const resultText = (_b = entry.result) !== null && _b !== void 0 ? _b : 'Pending';
-        const resultVariant = this.getResultVariant(entry.result);
+        const resultText = (_c = (_b = entry.result) === null || _b === void 0 ? void 0 : _b.message) !== null && _c !== void 0 ? _c : 'Pending';
+        const resultVariant = this.getResultVariant((_d = entry.result) === null || _d === void 0 ? void 0 : _d.status);
         const displayTimestamp = this.formatTimestamp(entry.timestamp);
         return `
       <li class="transcript__entry" data-entry-id="${entry.id}">
@@ -40,13 +40,15 @@ export class TranscriptPanel {
         }
         return date.toLocaleTimeString();
     }
-    getResultVariant(result) {
-        if (!result) {
+    getResultVariant(status) {
+        if (!status) {
             return 'transcript__result--pending';
         }
-        const normalized = result.toLowerCase();
-        if (normalized.includes('error') || normalized.includes('fail') || normalized.includes('unrecognized')) {
+        if (status === 'ERROR') {
             return 'transcript__result--error';
+        }
+        if (status === 'WARNING') {
+            return 'transcript__result--warning';
         }
         return 'transcript__result--ok';
     }

@@ -3,6 +3,7 @@ import { State } from './core/state.js';
 import { EventBus } from './core/events.js';
 import { Win95Shell } from './ui/win95Shell.js';
 import { TranscriptPanel } from './ui/transcriptPanel.js';
+import { TranscriptLogger } from './ui/transcriptLogger.js';
 import { VoiceListener } from './voice/voiceListener.js';
 import { CommandRecognizer } from './voice/commandRecognizer.js';
 import { CommandParser } from './command/commandParser.js';
@@ -27,6 +28,7 @@ const shell = new Win95Shell({ root, desktopPane, cursorLayer, state });
 const transcriptPanel = new TranscriptPanel({ container: transcriptContainer, list: transcriptList });
 const voiceListener = new VoiceListener(voiceBus);
 const commandRecognizer = new CommandRecognizer(commandBus);
+const transcriptLogger = new TranscriptLogger(state);
 function renderFromSnapshot(snapshot) {
     if (statusIndicatorEl && statusLabelEl) {
         statusIndicatorEl.dataset.status = snapshot.status;
@@ -52,22 +54,14 @@ function setStatus(status) {
     });
     renderFromSnapshot(snapshot);
 }
-function appendTranscript(rawText, command, result) {
-    const snapshot = state.update((draft) => {
-        const timestamp = new Date();
-        const entry = {
-            id: crypto.randomUUID(),
-            timestamp: timestamp.toISOString(),
-            rawText,
-            result,
-        };
-        if (command === null || command === void 0 ? void 0 : command.summary) {
-            entry.parsedCommand = command.summary;
-            draft.lastCommand = command;
-            draft.commandHistory.unshift(command.summary);
-            draft.commandHistory = draft.commandHistory.slice(0, 5);
-        }
-        draft.transcript.push(entry);
+function logTranscript(rawText, resultStatus, message, command) {
+    const snapshot = transcriptLogger.log({
+        rawText,
+        command: command !== null && command !== void 0 ? command : null,
+        result: {
+            status: resultStatus,
+            message,
+        },
     });
     renderFromSnapshot(snapshot);
 }
@@ -78,15 +72,24 @@ voiceBus.on('WAKE', () => {
 commandBus.on('COMMAND_RECOGNIZED', ({ rawText }) => {
     const parseResult = parser.parse(rawText);
     if (!parseResult.ok) {
-        appendTranscript(rawText, null, parseResult.message);
+        logTranscript(rawText, 'ERROR', parseResult.message);
         return;
     }
     const { command } = parseResult;
     const executionResult = executor.execute(command);
     shell.boot();
     setStatus('IDLE');
-    appendTranscript(rawText, command, executionResult.message);
+    logTranscript(rawText, mapExecutionStatusToTranscriptStatus(executionResult.status), executionResult.message, command);
 });
+function mapExecutionStatusToTranscriptStatus(status) {
+    if (status === 'SUCCESS') {
+        return 'SUCCESS';
+    }
+    if (status === 'SUCCESS_WITH_CLAMP') {
+        return 'WARNING';
+    }
+    return 'ERROR';
+}
 shell.boot();
 voiceListener.start();
 renderFromSnapshot(state.snapshot);
