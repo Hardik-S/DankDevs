@@ -19,8 +19,6 @@ export class TranscriptLogger {
             if (command === null || command === void 0 ? void 0 : command.summary) {
                 entry.parsedCommand = command.summary;
                 draft.lastCommand = command;
-                draft.commandHistory.unshift(command.summary);
-                draft.commandHistory = draft.commandHistory.slice(0, 5);
             }
             draft.transcript.push(entry);
         });

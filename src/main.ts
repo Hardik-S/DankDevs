@@ -27,7 +27,6 @@ const transcriptContainer = document.querySelector<HTMLElement>('#transcript-scr
 const transcriptList = document.querySelector<HTMLUListElement>('#transcript');
 const statusIndicatorEl = document.querySelector<HTMLElement>('[data-status-indicator]');
 const statusLabelEl = document.querySelector<HTMLElement>('[data-status-label]');
-const commandHistoryListEl = document.querySelector<HTMLUListElement>('#command-history');
 
 if (!desktopPane || !root || !cursorLayer || !transcriptList || !transcriptContainer) {
   throw new Error('SoundGO root elements missing');
@@ -45,16 +44,6 @@ function renderFromSnapshot(snapshot: AppState): void {
     statusIndicatorEl.classList.toggle('status-indicator--listening', snapshot.status === 'LISTENING');
     statusIndicatorEl.classList.toggle('status-indicator--idle', snapshot.status === 'IDLE');
     statusLabelEl.textContent = snapshot.status === 'LISTENING' ? 'Listening' : 'Idle';
-  }
-
-  if (commandHistoryListEl) {
-    if (snapshot.commandHistory.length === 0) {
-      commandHistoryListEl.innerHTML = '<li class="command-history__empty">No commands yet. Say “Hey Go” to begin.</li>';
-    } else {
-      commandHistoryListEl.innerHTML = snapshot.commandHistory
-        .map((summary) => `<li class="command-history__item">${summary}</li>`)
-        .join('');
-    }
   }
 
   transcriptPanel.render(snapshot.transcript);
