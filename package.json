@@ -1,0 +1,16 @@
+{
+  "name": "dankdevs",
+  "version": "1.0.0",
+  "description": "SoundGO Win95-style voice control playground",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -f public/scripts/*.js"
+  },
+  "keywords": ["soundgo", "win95", "voice"],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,118 @@
+/* WS5 — Transcript & UX styling. */
+:root {
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  background-color: #008080;
+  color: #111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  background: linear-gradient(120deg, #008080 0%, #0f8b8d 100%);
+}
+
+#app {
+  width: 100%;
+  max-width: 1200px;
+  padding: 24px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 16px;
+  height: 90vh;
+}
+
+.win95-shell {
+  position: relative;
+  border: 2px solid #e0dfdf;
+  background-color: #3a6ea5;
+  display: flex;
+  flex-direction: column;
+}
+
+.win95-shell__desktop {
+  flex: 1;
+  background: #018080 url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_95_Background.png') center/cover;
+  padding: 24px;
+}
+
+.window {
+  width: 320px;
+  border: 2px solid #000;
+  background-color: #c0c0c0;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.window__titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000080;
+  color: white;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+.window__actions button {
+  margin-left: 4px;
+}
+
+.window__body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.window__body textarea {
+  width: 100%;
+}
+
+.win95-shell__taskbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background-color: #c0c0c0;
+  border-top: 2px solid #999;
+}
+
+.start-button {
+  font-weight: bold;
+}
+
+.command-panel {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 2px solid #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.command-panel__reference ul,
+.command-panel__transcript ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.virtual-cursor {
+  position: absolute;
+  width: 16px;
+  height: 24px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="24"><polygon fill="white" stroke="black" points="0,0 16,12 9,13 9,24 5,24 5,13 0,12" /></svg>');
+  top: 40%;
+  left: 40%;
+  pointer-events: none;
+}
