@@ -1,14 +1,19 @@
 // WS3 — Command grammar & execution.
 import type { Command } from '../types/commands.js';
+import { normalizeCommandText } from './transcriptNormalizer.js';
 
 const RELATIVE_PATTERN = /(left|right|up|down)\s+(\d+)/i;
 const ABSOLUTE_PATTERN = /x\s*(\d+)\s*y\s*(\d+)/i;
+const TYPE_PREFIX_PATTERN = /^type\s+/i;
 
 export class CommandParser {
   parse(rawText: string): Command | null {
-    const normalized = rawText.trim().toLowerCase();
+    const { displayText, matchableText } = normalizeCommandText(rawText);
+    if (!matchableText) {
+      return null;
+    }
 
-    const relativeMatch = normalized.match(RELATIVE_PATTERN);
+    const relativeMatch = matchableText.match(RELATIVE_PATTERN);
     if (relativeMatch) {
       const [, direction, distanceStr] = relativeMatch;
       if (!direction || !distanceStr) return null;
@@ -20,7 +25,7 @@ export class CommandParser {
       };
     }
 
-    const absoluteMatch = normalized.match(ABSOLUTE_PATTERN);
+    const absoluteMatch = matchableText.match(ABSOLUTE_PATTERN);
     if (absoluteMatch) {
       const [, x, y] = absoluteMatch;
       if (!x || !y) return null;
@@ -32,20 +37,22 @@ export class CommandParser {
       };
     }
 
-    if (normalized.includes('double click')) {
+    if (matchableText.includes('double click')) {
       return { type: 'MOUSE_DOUBLE_CLICK', summary: 'Double click' };
     }
 
-    if (normalized.includes('right click')) {
+    if (matchableText.includes('right click')) {
       return { type: 'MOUSE_RIGHT_CLICK', summary: 'Right click' };
     }
 
-    if (normalized.includes('click')) {
+    if (matchableText.includes('click')) {
       return { type: 'MOUSE_CLICK', summary: 'Click' };
     }
 
-    if (normalized.startsWith('type ')) {
-      return { type: 'KEYBOARD_TYPE', text: rawText.slice(5), summary: `Type "${rawText.slice(5)}"` };
+    if (matchableText.startsWith('type ')) {
+      const prefixMatch = displayText.match(TYPE_PREFIX_PATTERN);
+      const text = prefixMatch ? displayText.slice(prefixMatch[0].length) : '';
+      return { type: 'KEYBOARD_TYPE', text, summary: `Type "${text}"` };
     }
 
     return null;
