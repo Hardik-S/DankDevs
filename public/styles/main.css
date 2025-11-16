@@ -36,7 +36,34 @@ body {
 .desktop-pane {
   flex: 0 0 80%;
   max-width: 80%;
+  position: relative;
   display: flex;
+  padding: 16px;
+  background-color: #008080;
+  border: 4px solid #006464;
+  overflow: hidden;
+}
+
+.desktop-pane__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.desktop-pane__logo svg {
+  width: 260px;
+  height: 120px;
+}
+
+.desktop-pane__logo-text {
+  font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
+  font-size: 32px;
+  fill: #ffffff;
+  font-weight: bold;
 }
 
 .control-pane {
@@ -53,16 +80,21 @@ body {
 
 .win95-shell {
   position: relative;
+  z-index: 1;
   border: 2px solid #e0dfdf;
-  background-color: #3a6ea5;
+  background-color: rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-height: 100%;
 }
 
 .win95-shell__desktop {
-  flex: 1;
-  background: #018080 url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_95_Background.png') center/cover;
+  flex: 1 1 auto;
   padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .window {
@@ -104,6 +136,8 @@ body {
   padding: 4px 8px;
   background-color: #c0c0c0;
   border-top: 2px solid #999;
+  width: 100%;
+  min-height: 48px;
 }
 
 .start-button {
