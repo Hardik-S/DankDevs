@@ -1,9 +1,14 @@
+import { normalizeCommandText } from './transcriptNormalizer.js';
 const RELATIVE_PATTERN = /(left|right|up|down)\s+(\d+)/i;
 const ABSOLUTE_PATTERN = /x\s*(\d+)\s*y\s*(\d+)/i;
+const TYPE_PREFIX_PATTERN = /^type\s+/i;
 export class CommandParser {
     parse(rawText) {
-        const normalized = rawText.trim().toLowerCase();
-        const relativeMatch = normalized.match(RELATIVE_PATTERN);
+        const { displayText, matchableText } = normalizeCommandText(rawText);
+        if (!matchableText) {
+            return null;
+        }
+        const relativeMatch = matchableText.match(RELATIVE_PATTERN);
         if (relativeMatch) {
             const [, direction, distanceStr] = relativeMatch;
             if (!direction || !distanceStr)
@@ -15,7 +20,7 @@ export class CommandParser {
                 summary: `Move ${direction} ${distanceStr}px`,
             };
         }
-        const absoluteMatch = normalized.match(ABSOLUTE_PATTERN);
+        const absoluteMatch = matchableText.match(ABSOLUTE_PATTERN);
         if (absoluteMatch) {
             const [, x, y] = absoluteMatch;
             if (!x || !y)
@@ -27,17 +32,19 @@ export class CommandParser {
                 summary: `Move to (${x}, ${y})`,
             };
         }
-        if (normalized.includes('double click')) {
+        if (matchableText.includes('double click')) {
             return { type: 'MOUSE_DOUBLE_CLICK', summary: 'Double click' };
         }
-        if (normalized.includes('right click')) {
+        if (matchableText.includes('right click')) {
             return { type: 'MOUSE_RIGHT_CLICK', summary: 'Right click' };
         }
-        if (normalized.includes('click')) {
+        if (matchableText.includes('click')) {
             return { type: 'MOUSE_CLICK', summary: 'Click' };
         }
-        if (normalized.startsWith('type ')) {
-            return { type: 'KEYBOARD_TYPE', text: rawText.slice(5), summary: `Type "${rawText.slice(5)}"` };
+        if (matchableText.startsWith('type ')) {
+            const prefixMatch = displayText.match(TYPE_PREFIX_PATTERN);
+            const text = prefixMatch ? displayText.slice(prefixMatch[0].length) : '';
+            return { type: 'KEYBOARD_TYPE', text, summary: `Type "${text}"` };
         }
         return null;
     }
