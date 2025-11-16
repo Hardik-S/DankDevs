@@ -3,6 +3,12 @@ export type CommandEvents = Record<string, unknown> & {
     COMMAND_RECOGNIZED: {
         rawText: string;
     };
+    COMMAND_ERROR: {
+        message: string;
+    };
+    COMMAND_TIMEOUT: {
+        message: string;
+    };
 };
 export declare class CommandRecognizer {
     private bus;
@@ -11,6 +17,7 @@ export declare class CommandRecognizer {
     private captureTimeoutId;
     private hasEmittedForCapture;
     private readonly captureWindowMs;
+    private ignoreAbortedError;
     constructor(bus: EventBus<CommandEvents>);
     capture(): void;
     simulateRecognition(rawText: string): void;

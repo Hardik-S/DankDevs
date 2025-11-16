@@ -43,6 +43,8 @@ export type CommandEvents =
   & Record<string, unknown>
   & {
       COMMAND_RECOGNIZED: { rawText: string };
+      COMMAND_ERROR: { message: string };
+      COMMAND_TIMEOUT: { message: string };
     };
 
 export class CommandRecognizer {
@@ -56,6 +58,8 @@ export class CommandRecognizer {
 
   private readonly captureWindowMs = 6000;
 
+  private ignoreAbortedError = false;
+
   constructor(private bus: EventBus<CommandEvents>) {}
 
   capture(): void {
@@ -67,7 +71,7 @@ export class CommandRecognizer {
     }
 
     if (this.captureActive) {
-      this.stopActiveCapture();
+      this.stopActiveCapture({ suppressAbortedLog: true });
     }
 
     this.hasEmittedForCapture = false;
@@ -83,7 +87,8 @@ export class CommandRecognizer {
 
     this.captureTimeoutId = window.setTimeout(() => {
       console.info('[CommandRecognizer] Capture timed out without speech');
-      this.stopActiveCapture();
+      this.bus.emit('COMMAND_TIMEOUT', { message: 'No speech detected before timeout.' });
+      this.stopActiveCapture({ suppressAbortedLog: true });
     }, this.captureWindowMs);
   }
 
@@ -150,23 +155,31 @@ export class CommandRecognizer {
 
     this.hasEmittedForCapture = true;
     this.bus.emit('COMMAND_RECOGNIZED', { rawText: normalized });
-    this.stopActiveCapture();
+    this.stopActiveCapture({ suppressAbortedLog: true });
   }
 
   private handleError(event: CommandSpeechRecognitionErrorEvent): void {
+    if (event.error === 'aborted' && this.ignoreAbortedError) {
+      this.ignoreAbortedError = false;
+      return;
+    }
+    this.ignoreAbortedError = false;
     console.warn(`[CommandRecognizer] Speech recognition error: ${event.error ?? 'unknown'}`);
+    const message = event.message ?? event.error ?? 'Unknown speech recognition error';
+    this.bus.emit('COMMAND_ERROR', { message });
     this.stopActiveCapture();
   }
 
   private handleEnd(): void {
     this.captureActive = false;
+    this.ignoreAbortedError = false;
     if (this.captureTimeoutId !== null) {
       window.clearTimeout(this.captureTimeoutId);
       this.captureTimeoutId = null;
     }
   }
 
-  private stopActiveCapture(): void {
+  private stopActiveCapture(options?: { suppressAbortedLog?: boolean }): void {
     if (!this.captureActive) {
       return;
     }
@@ -175,6 +188,9 @@ export class CommandRecognizer {
       this.captureTimeoutId = null;
     }
     try {
+      if (options?.suppressAbortedLog) {
+        this.ignoreAbortedError = true;
+      }
       this.recognition?.stop();
     } catch (error) {
       console.warn('[CommandRecognizer] Failed to stop recognition cleanly', error);
