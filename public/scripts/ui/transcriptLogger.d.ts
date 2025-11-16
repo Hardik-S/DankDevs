@@ -19,5 +19,6 @@ export declare class TranscriptLogger {
      * Returns the latest state snapshot so callers can re-render.
      */
     log(payload: TranscriptLogPayload): AppState;
+    private generateEntryId;
 }
 //# sourceMappingURL=transcriptLogger.d.ts.map
