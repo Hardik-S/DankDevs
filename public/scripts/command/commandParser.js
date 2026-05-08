@@ -243,12 +243,13 @@ export class CommandParser {
         return key.charAt(0).toUpperCase() + key.slice(1);
     }
     parseNumber(token) {
+        const numericToken = token.trim().replace(/,/g, '');
+        if (/^-?\d+$/.test(numericToken)) {
+            return Number.parseInt(numericToken, 10);
+        }
         const cleaned = token.replace(/[^a-z0-9\s-]/gi, '').replace(/-/g, ' ').replace(/\band\b/g, '').trim();
         if (!cleaned) {
             return null;
-        }
-        if (/^-?\d+$/.test(cleaned)) {
-            return Number.parseInt(cleaned, 10);
         }
         const words = cleaned.split(/\s+/);
         let total = 0;
