@@ -4,7 +4,8 @@
   "description": "SoundGO Win95-style voice control playground",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -f public/scripts/*.js"
+    "clean": "rm -f public/scripts/*.js",
+    "test:command-parser": "node scripts/verify-command-parser.mjs"
   },
   "keywords": ["soundgo", "win95", "voice"],
   "author": "",

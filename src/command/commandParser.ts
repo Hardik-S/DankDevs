@@ -230,7 +230,13 @@ export class CommandParser {
     if (!keyToken) {
       return this.createError('MISSING_ARGUMENT', rawText, 'Please provide a key to press.');
     }
-    const modifiers = this.extractModifiers(tokens.slice(0, -1));
+    const modifierTokens = tokens.slice(0, -1);
+    const unsupportedModifierToken = modifierTokens.find((token) => !MODIFIER_MAP[token]);
+    if (unsupportedModifierToken) {
+      return this.createError('UNSUPPORTED_KEY', rawText, `Modifier "${unsupportedModifierToken}" is not supported.`);
+    }
+
+    const modifiers = this.extractModifiers(modifierTokens);
     const key = this.parseKeyToken(keyToken);
 
     if (!key) {
