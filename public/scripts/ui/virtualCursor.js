@@ -1,4 +1,4 @@
-const MIDDLE_FINGER_CURSOR_URL = '/assets/middle-finger-cursor.png';
+const MIDDLE_FINGER_CURSOR_URL = 'xmiddle-finger-cursor.png';
 export class VirtualCursor {
     constructor(options) {
         this.options = options;
